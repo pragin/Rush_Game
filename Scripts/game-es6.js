@@ -27,6 +27,41 @@ class Platform extends GameObject{
   }
 }
 
+class World extends createjs.Container{
+  constructor() {
+    super();
+
+    // sotre all platforms
+    this.platforms = [];
+
+    this.generatePlatforms();
+    this.addHero();
+  }
+
+  addHero(){
+    var hero = new Hero();
+    this.addChild(hero);
+    hero.x = 100;
+    hero.y = 100;
+
+    this.hero =hero;
+  }
+
+  generatePlatforms(){
+    var platform = new Platform();
+    platform.x = 100;
+    platform.y = 300;
+    this.platforms.push(platform);
+    this.addChild(platform);
+
+    platform = new Platform();
+    platform.x = 250;
+    platform.y = 300;
+    this.platforms.push(platform);
+    this.addChild(platform);
+  }
+}
+
 
 
 class Game {
@@ -89,16 +124,8 @@ class Game {
   }
 
   restartGame() {
-    var hero = new Hero();
-    this.stage.addChild(hero);
-    hero.x = 100;
-    hero.y = 100;
-
-    var platform = new Platform();
-    this.stage.addChild(platform);
-    platform.x = 200;
-    platform.y = 200;
-
+    this.world = new World();
+    this.stage.addChild(this.world);
   }
 
   retinalize() {
