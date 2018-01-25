@@ -1,5 +1,34 @@
 // logic for the Count Game
 
+class GameObject extends createjs.Container{
+  constructor(graphic){
+    super();
+
+    if(graphic !== undefined) {
+      this.graphic = graphic;
+      this.addChild(this.graphic);
+
+      var b = this.graphic.nominalBounds;
+      this.setBounds(b.x, b.y, b.width, b.height);
+
+    }
+  }
+}
+
+class Hero extends GameObject{
+  constructor(){
+    super( new lib.HeroGraphic());
+  }
+}
+
+class Platform extends GameObject{
+  constructor() {
+    super( new lib.PlatformGraphic());
+  }
+}
+
+
+
 class Game {
   constructor() {
     console.log(`Welcome to the game, Version ${this.version()} `);
@@ -29,17 +58,46 @@ class Game {
       //Keep redrawing the Stage
     createjs.Ticker.on("tick", this.stage);
 
-    this.restartGame();
+
+    this.loadGraphics();
   }
 
   version() {
     return '1.0.0';
   }
 
+  loadGraphics() {
+    var loader = new createjs.LoadQueue(false);
+	  loader.addEventListener("fileload", handleFileLoad);
+	  loader.addEventListener("complete", handleComplete.bind(this));
+	  loader.loadFile({src:"images/rush_game_graphics_atlas_.json", type:"spritesheet", id:"rush_game_graphics_atlas_"}, true);
+	  loader.loadManifest(lib.properties.manifest);
+
+      function handleFileLoad(evt) {
+        if (evt.item.type == "image") { images[evt.item.id] = evt.result; }
+      }
+
+      function handleComplete(evt) {
+       var queue = evt.target;
+       ss["rush_game_graphics_atlas_"] = queue.getResult("rush_game_graphics_atlas_");
+
+       this.restartGame()
+      }
+  }
+
   loadSound(){
   }
 
   restartGame() {
+    var hero = new Hero();
+    this.stage.addChild(hero);
+    hero.x = 100;
+    hero.y = 100;
+
+    var platform = new Platform();
+    this.stage.addChild(platform);
+    platform.x = 200;
+    platform.y = 200;
 
   }
 
